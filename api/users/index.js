@@ -55,7 +55,7 @@ router.put('/:id', async (req, res) => {
         res.status(404).json({ code: 404, msg: 'Unable to Update User' });
     }
 });
-//Add a favourite. No Error Handling Yet. Can add duplicates too!
+//Add a favourite. Can't add duplicates.
 router.post('/:userName/favourites', asyncHandler(async (req, res) => {
   const newFavourite = req.body.id;
   const userName = req.params.userName;

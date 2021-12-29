@@ -1,6 +1,5 @@
-import {
-    getUpcomingMovies
-  } from '../tmdb-api';
+import {getUpcomingMovies,getNowplayingMovies} from '../tmdb-api';
+
 import express from 'express';
 import { movies, movieReviews, movieDetails } from './moviesData';
 import uniqid from 'uniqid'
@@ -50,6 +49,13 @@ router.get('/tmdb/upcoming', asyncHandler( async(req, res) => {
     const upcomingMovies = await getUpcomingMovies();
     res.status(200).json(upcomingMovies);
   }));
+
+//Get a nowplaying movie
+router.get('/tmdb/nowplaying', asyncHandler( async(req, res) => {
+    const nowplayingMovies = await getNowplayingMovies();
+    res.status(200).json(nowplayingMovies);
+  }));
+
 //Post a movie review
 router.post('/:id/reviews', (req, res) => {
     const id = parseInt(req.params.id);
