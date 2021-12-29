@@ -3,6 +3,7 @@ import User from './userModel';
 import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 import movieModel from '../movies/movieModel';
+import actorsModel from '../actors/actorsModel';
 
 const router = express.Router(); // eslint-disable-line
 
@@ -60,6 +61,10 @@ router.post('/:userName/favourites', asyncHandler(async (req, res) => {
   const newFavourite = req.body.id;
   const userName = req.params.userName;
   const movie = await movieModel.findByMovieDBId(newFavourite);
+  //if the movie's id not exits,it will have error.
+  if (movie == null){
+    res.status(401).json({ code: 401, msg: 'The movie id not exits' });
+  }
   const user = await User.findByUserName(userName);
   if (user.favourites.indexOf(movie._id)==-1){
     await user.favourites.push(movie._id);
@@ -74,5 +79,29 @@ router.get('/:userName/favourites', asyncHandler( async (req, res) => {
   const userName = req.params.userName;
   const user = await User.findByUserName(userName).populate('favourites');
   res.status(200).json(user.favourites);
+}));
+
+//Add a actor. Can't add duplicates.
+router.post('/:userName/liked_actors', asyncHandler(async (req, res) => {
+  const newLikedActors = req.body.id;
+  const userName = req.params.userName;
+  const actor = await actorsModel.findByActorDBId(newLikedActors);
+  if (actor == null){
+    res.status(401).json({ code: 401, msg: 'The actor id not exits' });
+  }
+  const user = await User.findByUserName(userName);
+  if (user.liked_actors.indexOf(actor._id)==-1){
+    await user.liked_actors.push(actor._id);
+    await user.save(); 
+    res.status(201).json(user); 
+  }else{
+    res.status(404).json({ code: 404, msg: 'Unable to add duplicates' });
+  }
+  
+}));
+router.get('/:userName/liked_actors', asyncHandler( async (req, res) => {
+  const userName = req.params.userName;
+  const user = await User.findByUserName(userName).populate('liked_actors');
+  res.status(200).json(user.liked_actors);
 }));
 export default router;
