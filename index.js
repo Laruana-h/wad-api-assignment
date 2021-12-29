@@ -6,6 +6,7 @@ import './db';
 import './seedData'
 import usersRouter from './api/users';
 import actorsRouter from './api/actors';
+import tvsRouter from './api/tvs';
 import session from 'express-session';
 import passport from './authenticate';
 
@@ -28,6 +29,7 @@ app.use(express.json());
 app.use(passport.initialize());
 app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 app.use('/api/actors', passport.authenticate('jwt', {session: false}), actorsRouter);
+app.use('/api/tvs', passport.authenticate('jwt', {session: false}), tvsRouter);
 // app.use('/api/movies', authenticate, moviesRouter);
 app.use('/api/genres', genresRouter);
 app.use('/api/users', usersRouter);

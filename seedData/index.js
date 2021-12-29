@@ -7,7 +7,8 @@ import movieModel from '../api/movies/movieModel';
 import movies from './movies.js';
 import actorsModel from '../api/actors/actorsModel';
 import actors from './actors.js';
-
+import tvModel from '../api/tvs/tvModel';
+import tvs from './tvs.js';
 
 dotenv.config();
 
@@ -57,10 +58,23 @@ export async function loadActors() {
     console.error(`failed to Load actor Data: ${err}`);
   }
 }
+
+export async function loadTvs() {
+  console.log('load seed data');
+  console.log(tvs.length);
+  try {
+    await tvModel.deleteMany();
+    await tvModel.collection.insertMany(tvs);
+    console.info(`${tvs.length} TVs were successfully stored.`);
+  } catch (err) {
+    console.error(`failed to Load actor Data: ${err}`);
+  }
+}
 if (process.env.SEED_DB == 'true') {
   loadUsers();
   loadGenres();
   loadMovies();
-  loadActors()
+  loadActors();
+  loadTvs()
 }
 
