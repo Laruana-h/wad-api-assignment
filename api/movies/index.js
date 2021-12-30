@@ -44,18 +44,6 @@ router.get('/:id/reviews', (req, res) => {
         });
     }
 });
-//Get an upcoming movie
-router.get('/tmdb/upcoming', asyncHandler( async(req, res) => {
-    const upcomingMovies = await getUpcomingMovies();
-    res.status(200).json(upcomingMovies);
-  }));
-
-//Get a nowplaying movie
-router.get('/tmdb/nowplaying', asyncHandler( async(req, res) => {
-    const nowplayingMovies = await getNowplayingMovies();
-    res.status(200).json(nowplayingMovies);
-  }));
-
 //Post a movie review
 router.post('/:id/reviews', (req, res) => {
     const id = parseInt(req.params.id);
@@ -73,5 +61,30 @@ router.post('/:id/reviews', (req, res) => {
         });
     }
 });
+// Update a movie review
+router.put('/:id/reviews', async (req, res) => {
+    if (req.body._id) delete req.body._id;
+    const result = await movieModel.updateOne({
+        _id: req.params.id,
+    }, req.body);
+    if (result.matchedCount) {
+        res.status(200).json({ code:200, msg: 'User Updated Sucessfully' });
+    } else {
+        res.status(404).json({ code: 404, msg: 'Unable to Update User' });
+    }
+});
+//Get an upcoming movie
+router.get('/tmdb/upcoming', asyncHandler( async(req, res) => {
+    const upcomingMovies = await getUpcomingMovies();
+    res.status(200).json(upcomingMovies);
+  }));
+
+//Get a nowplaying movie
+router.get('/tmdb/nowplaying', asyncHandler( async(req, res) => {
+    const nowplayingMovies = await getNowplayingMovies();
+    res.status(200).json(nowplayingMovies);
+  }));
+
+
 
 export default router;

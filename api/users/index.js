@@ -57,6 +57,23 @@ router.put('/:id', async (req, res) => {
         res.status(404).json({ code: 404, msg: 'Unable to Update User' });
     }
 });
+//delete a user
+router.delete('/:username', (req, res, next) => {
+  User.findOneAndDelete({ username: req.params.username }, (err, docs) => {
+    if (err || !docs) {
+      res.status(401).json({
+        code: 401,
+        msg: 'Fail to delete the user'
+      })
+    } else {
+      res.status(200).json({
+        code:200, 
+        msg: 'Deleted User: ' + docs.username
+      })
+    }
+  })
+})
+
 //Add a favourite. Can't add duplicates.
 router.post('/:userName/favourites', asyncHandler(async (req, res) => {
   const newFavourite = req.body.id;
