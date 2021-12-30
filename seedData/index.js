@@ -1,15 +1,12 @@
 import userModel from '../api/users/userModel';
 import genresModel from '../api/genres/genresModel';
 import users from './users';
-import genres from './genres';
 import dotenv from 'dotenv';
 import movieModel from '../api/movies/movieModel';
 import actorsModel from '../api/actors/actorsModel';
-import actors from './actors.js';
 import tvModel from '../api/tvs/tvModel';
-import tvs from './tvs.js';
 
-const {getMovies} = require('../api/tmdb-api')
+const {getMovies,getGenres,getActors,getTVs} = require('../api/tmdb-api')
 
 dotenv.config();
 
@@ -29,6 +26,7 @@ async function loadGenres() {
   console.log('load genre Data');
   try {
     await genresModel.deleteMany();
+    const genres = await getGenres();
     await genresModel.collection.insertMany(genres);
     console.info(`${genres.length} genres were successfully stored.`);
   } catch (err) {
@@ -37,8 +35,9 @@ async function loadGenres() {
 }
 // deletes all movies documents in collection and inserts test data
 export async function loadMovies() {
-  console.log('load seed data');
-  // console.log(movies.length);
+  const movies = await getMovies();
+  console.log('load movie data');
+  console.log(movies.length);
   try {
     await movieModel.deleteMany();
     const movies = await getMovies();
@@ -50,7 +49,8 @@ export async function loadMovies() {
 }
 
 export async function loadActors() {
-  console.log('load seed data');
+  const actors = await getActors();
+  console.log('load actor data');
   console.log(actors.length);
   try {
     await actorsModel.deleteMany();
@@ -62,7 +62,8 @@ export async function loadActors() {
 }
 
 export async function loadTvs() {
-  console.log('load seed data');
+  const tvs = await getTVs();
+  console.log('load TV data');
   console.log(tvs.length);
   try {
     await tvModel.deleteMany();
