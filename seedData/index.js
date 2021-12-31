@@ -6,7 +6,7 @@ import movieModel from '../api/movies/movieModel';
 import actorsModel from '../api/actors/actorsModel';
 import tvModel from '../api/tvs/tvModel';
 
-const {getMovies,getGenres,getActors,getTVs} = require('../api/tmdb-api')
+const {getMovies,getGenres,getActors,getTVs,getRecommendations} = require('../api/tmdb-api')
 
 dotenv.config();
 
@@ -15,8 +15,8 @@ async function loadUsers() {
   console.log('load user Data');
   try {
     await userModel.deleteMany();
-    await userModel.collection.insertMany(users);
-    // await users.forEach(user => userModel.create(user));
+    // await userModel.collection.insertMany(users);
+    await users.forEach(user => userModel.create(user));
     console.info(`${users.length} users were successfully stored.`);
   } catch (err) {
     console.error(`failed to Load user Data: ${err}`);
@@ -73,11 +73,13 @@ export async function loadTvs() {
     console.error(`failed to Load actor Data: ${err}`);
   }
 }
+
 if (process.env.SEED_DB == 'true') {
   loadUsers();
   loadGenres();
   loadMovies();
   loadActors();
-  loadTvs()
+  loadTvs();
+
 }
 

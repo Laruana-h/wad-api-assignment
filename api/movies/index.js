@@ -1,4 +1,4 @@
-import {getUpcomingMovies,getNowplayingMovies} from '../tmdb-api';
+import {getUpcomingMovies,getNowplayingMovies,getRecommendations} from '../tmdb-api';
 
 import express from 'express';
 import { movies, movieReviews, movieDetails } from './moviesData';
@@ -85,6 +85,12 @@ router.get('/tmdb/nowplaying', asyncHandler( async(req, res) => {
     res.status(200).json(nowplayingMovies);
   }));
 
+//Get a nowplaying movie
+router.get('/:id/recommend', asyncHandler( async(req, res) => {
+    const id = parseInt(req.params.id);
+    const recommendMovies = await getRecommendations(id);
+    res.status(200).json(recommendMovies);
+  }));
 
 
 export default router;
