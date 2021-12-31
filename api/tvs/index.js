@@ -17,7 +17,7 @@ router.get('/', asyncHandler(async (req, res) => {
 
     res.status(200).json(returnObject);
 }));
-// Get actors details
+// Get tvs details
 router.get('/:id', asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const tv = await tvModel.findByTVDBId(id);
