@@ -95,6 +95,14 @@ export const getRecommendations = id => {
     .then(json => json.results);
 }; 
 
+export const getMovieSimilar = id => {
+  return fetch(
+    `https://api.themoviedb.org/3/movie/${id}/similar?api_key=${process.env.TMDB_KEY}`
+  )
+    .then(res => res.json())
+    .then(json => json.results);
+};
+
 export const getMovieReviews = id => {
   return fetch(
     `https://api.themoviedb.org/3/movie/${id}/reviews?api_key=${process.env.TMDB_KEY}`
@@ -102,3 +110,11 @@ export const getMovieReviews = id => {
     .then(res => res.json())
     .then(json => json.results);
 };
+
+export const getPopularTVs = () => {
+  return fetch(
+    `https://api.themoviedb.org/3/tv/popular?api_key=${process.env.TMDB_KEY}&language=en-US&page=1`
+  )
+  .then(res => res.json())
+  .then(json => json.results)
+}

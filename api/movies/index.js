@@ -1,14 +1,10 @@
-import { getUpcomingMovies, getNowplayingMovies, getRecommendations, getMovieReviews } from '../tmdb-api';
+import { getUpcomingMovies, getNowplayingMovies, getRecommendations, getMovieReviews,getMovieSimilar } from '../tmdb-api';
 
 import express from 'express';
-import { movies, movieReviews, movieDetails } from './moviesData';
 import uniqid from 'uniqid'
 import asyncHandler from 'express-async-handler';
 import movieModel from './movieModel';
 import reviewModel from '../reviews/reviewModel';
-
-const authorModel = require('../author/authorModel')
-
 
 
 const router = express.Router();
@@ -72,15 +68,6 @@ router.get('/:id/reviews', asyncHandler(async (req, res, next) => {
 }
 ));
 
-//         await reviewModel.deleteMany();
-//         await reviewModel.collection.insertMany(review) ;
-//         res.status(200).json(await reviewModel.find());
-//     } else {
-//         res.status(404).json({message: 'The resource you requested could not be found.', status_code: 404});
-//     }
-// }));
-
-
 //Post a movie review
 router.post('/:id/reviews',asyncHandler(async (req, res,next) => {
     const id = parseInt(req.params.id);
@@ -136,11 +123,18 @@ router.get('/tmdb/nowplaying', asyncHandler(async (req, res) => {
     res.status(200).json(nowplayingMovies);
 }));
 
-//Get a nowplaying movie
+//Get a recommend movie
 router.get('/:id/recommend', asyncHandler(async (req, res) => {
     const id = parseInt(req.params.id);
     const recommendMovies = await getRecommendations(id);
     res.status(200).json(recommendMovies);
+}));
+
+//Get a similar movie
+router.get('/:id/similar', asyncHandler(async (req, res) => {
+    const id = parseInt(req.params.id);
+    const similarMovies = await getMovieSimilar(id);
+    res.status(200).json(similarMovies);
 }));
 
 

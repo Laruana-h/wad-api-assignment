@@ -6,7 +6,7 @@ import movieModel from '../api/movies/movieModel';
 import actorsModel from '../api/actors/actorsModel';
 import tvModel from '../api/tvs/tvModel';
 
-const {getMovies,getGenres,getActors,getTVs,getRecommendations} = require('../api/tmdb-api')
+const {getMovies,getGenres,getActors,getTVs} = require('../api/tmdb-api')
 
 dotenv.config();
 
