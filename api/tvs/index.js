@@ -1,7 +1,7 @@
 import express from 'express';
 import tvModel from './tvModel';
 import asyncHandler from 'express-async-handler';
-import { getPopularTVs } from '../tmdb-api';
+import { getPopularTVs,searchTVByPage } from '../tmdb-api';
 const router = express.Router(); 
 router.get('/', asyncHandler(async (req, res) => {
     let { page = 1, limit = 10 } = req.query; // destructure page and limit and set default values
@@ -28,10 +28,45 @@ router.get('/:id', asyncHandler(async (req, res) => {
     }
 }));
 
-//Get an upcoming movie
+//Get a popular tv
 router.get('/tmdb/populartv', asyncHandler(async (req, res) => {
     const popularTVs = await getPopularTVs();
     res.status(200).json(popularTVs);
 }));
 
 export default router;
+
+//Search tvs by page
+router.get('/search/:page', async (req, res, next) => {
+    try {
+      const page = parseInt(req.params.page)
+      const query = req.query.search
+      const tvs = await searchTVByPage(page, query)
+      res.status(200).send(tvs)
+    } catch (err) {
+      next(err)
+    }
+  
+  })
+
+  router.get('/:id/ratings', (req, res, next) => {
+    const id = parseInt(req.params.id)
+    try {
+      tvModel.find({ "id": id }).populate({
+        "path": "ratings",
+        "populate": {
+          "path": "user",
+          "model": "User"
+        }
+      }).exec((err, docs) => {
+        if (err) {
+          next(err)
+        } else {
+          res.status(200).send(docs)
+        }
+      })
+    }catch(err) {
+      next(err)
+    }
+    
+  })

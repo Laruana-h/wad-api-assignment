@@ -5,7 +5,6 @@ import jwt from 'jsonwebtoken';
 import movieModel from '../movies/movieModel';
 import actorsModel from '../actors/actorsModel';
 import tvModel from '../tvs/tvModel';
-
 const router = express.Router(); // eslint-disable-line
 
 // Get all users
@@ -58,7 +57,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 //delete a user
-router.delete('/:username', (req, res, next) => {
+router.delete('/:username', (req, res) => {
   User.findOneAndDelete({ username: req.params.username }, (err, docs) => {
     if (err || !docs) {
       res.status(401).json({

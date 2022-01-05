@@ -1,4 +1,5 @@
-import { getUpcomingMovies, getNowplayingMovies, getRecommendations, getMovieReviews,getMovieSimilar } from '../tmdb-api';
+import { getUpcomingMovies, getNowplayingMovies, getRecommendations, getMovieReviews,getMovieSimilar,
+    searchMovies} from '../tmdb-api';
 
 import express from 'express';
 import uniqid from 'uniqid'
@@ -126,5 +127,14 @@ router.get('/:id/similar', asyncHandler(async (req, res) => {
     res.status(200).json(similarMovies);
 }));
 
-
+//Search movie
+router.get('/search/:query', async (req, res, next) => {
+	const query_string = "" + req.params.query
+	try {
+		const movies = await searchMovies(query_string)
+		res.status(200).send(movies)
+	} catch(err) {
+		next(err)
+	}
+})
 export default router;
