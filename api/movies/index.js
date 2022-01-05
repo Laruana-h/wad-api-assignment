@@ -99,18 +99,7 @@ router.post('/:id/reviews',asyncHandler(async (req, res,next) => {
 
     }
 }));
-// Update a movie review
-router.put('/:id/reviews', async (req, res) => {
-    if (req.body._id) delete req.body._id;
-    const result = await movieModel.updateOne({
-        _id: req.params.id,
-    }, req.body);
-    if (result.matchedCount) {
-        res.status(200).json({ code: 200, msg: 'User Updated Sucessfully' });
-    } else {
-        res.status(404).json({ code: 404, msg: 'Unable to Update User' });
-    }
-});
+
 //Get an upcoming movie
 router.get('/tmdb/upcoming', asyncHandler(async (req, res) => {
     const upcomingMovies = await getUpcomingMovies();
