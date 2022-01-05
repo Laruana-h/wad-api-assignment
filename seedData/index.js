@@ -40,7 +40,6 @@ export async function loadMovies() {
   console.log(movies.length);
   try {
     await movieModel.deleteMany();
-    const movies = await getMovies();
     await movieModel.collection.insertMany(movies);
     console.info(`${movies.length} Movies were successfully stored.`);
   } catch (err) {

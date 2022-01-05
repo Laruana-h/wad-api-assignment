@@ -45,7 +45,7 @@ router.post('/',asyncHandler( async (req, res, next) => {
       }
   }));
 // Update a user
-router.put('/:id', async (req, res) => {
+router.put('/:id', async (req, res,next) => {
     if (req.body._id) delete req.body._id;
     const result = await User.updateOne({
         _id: req.params.id,
@@ -55,23 +55,11 @@ router.put('/:id', async (req, res) => {
     } else {
         res.status(404).json({ code: 404, msg: 'Unable to Update User' });
     }
+    // User.findOneAndUpdate({ _id: req.params.id}, req.body, {
+    //   upsert: false
+    // }).then(user => res.json(200, user)).catch(err => next(err));
 });
-//delete a user
-router.delete('/:username', (req, res) => {
-  User.findOneAndDelete({ username: req.params.username }, (err, docs) => {
-    if (err || !docs) {
-      res.status(401).json({
-        code: 401,
-        msg: 'Fail to delete the user'
-      })
-    } else {
-      res.status(200).json({
-        code:200, 
-        msg: 'Deleted User: ' + docs.username
-      })
-    }
-  })
-})
+
 
 //Add a favourite. Can't add duplicates.
 router.post('/:userName/favourites', asyncHandler(async (req, res) => {
@@ -167,5 +155,23 @@ router.delete("/:userName/favourites/:id", asyncHandler(async (req,res,next)=>{
     })
   }
 }))
+
+//delete a user
+router.delete('/:username', (req, res) => {
+  User.findOneAndDelete({ username: req.params.username }, (err, docs) => {
+    if (err || !docs) {
+      res.status(401).json({
+        code: 401,
+        msg: 'Fail to delete the user'
+      })
+    } else {
+      res.status(200).json({
+        code:200, 
+        msg: 'Deleted User: ' + docs.username
+      })
+    }
+  })
+})
+
 
 export default router;

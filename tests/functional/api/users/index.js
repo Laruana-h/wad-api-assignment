@@ -3,11 +3,14 @@ import request from "supertest";
 const mongoose = require("mongoose");
 import User from "../../../../api/users/userModel";
 import api from "../../../../index";
-
+import { getActors, getMovies, getTVs } from "../../../../api/tmdb-api";
 const expect = chai.expect;
 let db;
+let id;
+let movies;
+let actors;
+let tvs;
 let user1token;
-
 describe("Users endpoint", () => {
   before(() => {
     mongoose.connect(process.env.MONGO_DB, {
@@ -27,6 +30,9 @@ describe("Users endpoint", () => {
   beforeEach(async () => {
     try {
       await User.deleteMany();
+      movies = await getMovies();
+      actors = await getActors();
+      tvs = await getTVs();
       // Register two users
       await request(api).post("/api/users?action=register").send({
         username: "user1",
@@ -55,7 +61,6 @@ describe("Users endpoint", () => {
           expect(res.body.length).to.equal(2);
           let result = res.body.map((user) => user.username);
           expect(result).to.have.members(["user1", "user2"]);
-          
         });
     });
   });
@@ -106,4 +111,205 @@ describe("Users endpoint", () => {
       });
     });
   });
-});
+  describe('PUT /:id ', () => {
+    before(() => {
+       request(api)
+        .get("/api/users")
+        .set("Accept", "application/json")
+        .expect("Content-Type", /json/)
+        .expect(200)
+        .then((res) => {
+          const ids = res.body.map(user => user._id)
+          id = ids[0]
+        });
+    })
+    it('When id is invalid', () => {
+       request(api)
+        .put("/api/users/123")
+        .set("Accept", "application/json")
+        .expect(404)
+        .expect({
+          status_code:404,
+          message:"Unable to Update User"
+        })
+    })
+
+    it('When password is valid', () => {
+       request(api)
+        .put(`/api/users/${id}`)
+        .set("Accept", "application/json")
+        .send({
+          username: 'user1',
+          password: 'test1111111'
+        })
+        .expect(200)
+        .expect({
+          status_code:200,
+          message:"Unable to Update User"
+        })
+    })
+  })
+  
+  describe("/api/users/:userName/favourites endpoint",()=>{
+    beforeEach(()=>{
+      getMovies().then((res)=>{
+        request(api)
+        .post('/api/users/user1/favourites')
+        .send({
+          "id":movies[0].id
+        })
+        .expect(200)
+        
+      })
+    })
+
+    describe("GET /api/users/:userName/favourites",()=>{
+      it("should return the added movies list and a status 200",()=>{
+        request(api)
+          .get('/api/users/user1/favourites')
+          .expect(200)
+          .then((req,res)=>{
+            expect(res.body[0].id).to.eq(movies[0].id);
+            expect(res.body[0].title).to.eq(movies[0].title);
+          })
+      })
+    })
+    
+    describe("POST /api/users/:userName/favourites",()=>{
+      it("should return the added movie and a status 200",()=>{
+        request(api)
+        .post('/api/users/user1/favourites')
+        .send({
+          "id":movies[1].id
+        })
+        .expect(200)
+        .then((req,res) =>{
+          expect(res.body.favourites.length).to.eq(2);
+          // done();
+        })
+      })
+      describe("When request with movie already in favourites",()=>{
+        it("should return error message and a status 404.",()=>{
+          request(api)
+          .post('/api/users/user1/favourites')
+          .send({
+            "id":movies[0].id
+          })
+          .expect(404)
+          .then((req,res) =>{
+            expect(res.body.msg).to.eq("Unable to add duplicates.");
+          })
+        })
+      })
+    })
+  })
+
+  describe("/api/users/:userName/liked_actors endpoint",()=>{
+    beforeEach(()=>{
+      getMovies().then((res)=>{
+        request(api)
+        .post('/api/users/user1/liked_actors')
+        .send({
+          "id":actors[0].id
+        })
+        .expect(200)
+        
+      })
+    })
+
+    describe("GET /api/users/:userName/liked_actors",()=>{
+      it("should return the added actor list and a status 200",()=>{
+        request(api)
+          .get('/api/users/user1/liked_actors')
+          .expect(200)
+          .then((req,res)=>{
+            expect(res.body[0].id).to.eq(actors[0].id);
+          })
+      })
+    })
+    
+    describe("POST /api/users/:userName/liked_actors",()=>{
+      it("should return the added actor and a status 200",()=>{
+        request(api)
+        .post('/api/users/user1/liked_actors')
+        .send({
+          "id":actors[1].id
+        })
+        .expect(200)
+        .then((req,res) =>{
+          expect(res.body.favourites.length).to.eq(2);
+          // done();
+        })
+      })
+      describe("When request with actor already in liked_actors",()=>{
+        it("should return error message and a status 404.",()=>{
+          request(api)
+          .post('/api/users/user1/liked_actors')
+          .send({
+            "id":actors[0].id
+          })
+          .expect(404)
+          .then((req,res) =>{
+            expect(res.body.msg).to.eq("Unable to add duplicates.");
+          })
+        })
+      })
+    })
+  })
+  describe("/api/users/:userName/tvlist endpoint",()=>{
+    beforeEach(()=>{
+      getMovies().then((res)=>{
+        request(api)
+        .post('/api/users/user1/tvlist')
+        .send({
+          "id":tvs[0].id
+        })
+        .expect(200)
+        
+      })
+    })
+
+    describe("GET /api/users/:userName/tvlist",()=>{
+      it("should return the added tv list and a status 200",()=>{
+        request(api)
+          .get('/api/users/user1/tvlist')
+          .expect(200)
+          .then((req,res)=>{
+            expect(res.body[0].id).to.eq(tvs[0].id);
+          })
+      })
+    })
+    
+    describe("POST /api/users/:userName/tvlist",()=>{
+      it("should return the added tvs and a status 200",()=>{
+        request(api)
+        .post('/api/users/user1/tvlist')
+        .send({
+          "id":tvs[1].id
+        })
+        .expect(200)
+        .then((req,res) =>{
+          expect(res.body.favourites.length).to.eq(2);
+          // done();
+        })
+      })
+      describe("When request with tv already in tvlist",()=>{
+        it("should return error message and a status 404.",()=>{
+          request(api)
+          .post('/api/users/user1/tvlist')
+          .send({
+            "id":tvs[0].id
+          })
+          .expect(404)
+          .then((req,res) =>{
+            expect(res.body.msg).to.eq("Unable to add duplicates.");
+          })
+        })
+      })
+    })
+  })
+})
+
+
+
+
