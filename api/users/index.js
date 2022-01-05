@@ -163,7 +163,7 @@ router.delete("/:userName/favourites/:id", asyncHandler(async (req,res,next)=>{
   }else{
     res.status(403).json({
       success: false,
-      message: "The movie not in the watchlist!"
+      message: "The movie not in the favourite!"
     })
   }
 }))

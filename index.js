@@ -10,7 +10,8 @@ import tvsRouter from './api/tvs';
 import session from 'express-session';
 import passport from './authenticate';
 import rateRouter from './api/rate';
-
+const swaggerUI = require('swagger-ui-express')
+const swaggerDocument = require('./swagger.json')
 dotenv.config();
 
 const errHandler = (err, req, res, next) => {
@@ -25,7 +26,7 @@ const errHandler = (err, req, res, next) => {
 const app = express();
 
 const port = process.env.PORT;
-
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
 app.use(express.json());
 app.use(passport.initialize());
 app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);

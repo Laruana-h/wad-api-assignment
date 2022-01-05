@@ -46,27 +46,6 @@ router.get('/search/:page', async (req, res, next) => {
     } catch (err) {
       next(err)
     }
-  
+
   })
 
-  router.get('/:id/ratings', (req, res, next) => {
-    const id = parseInt(req.params.id)
-    try {
-      tvModel.find({ "id": id }).populate({
-        "path": "ratings",
-        "populate": {
-          "path": "user",
-          "model": "User"
-        }
-      }).exec((err, docs) => {
-        if (err) {
-          next(err)
-        } else {
-          res.status(200).send(docs)
-        }
-      })
-    }catch(err) {
-      next(err)
-    }
-    
-  })
