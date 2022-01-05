@@ -146,6 +146,26 @@ router.get('/:userName/tvlist', asyncHandler( async (req, res) => {
   res.status(200).json(user.tvlist);
 }));
 
-
+router.delete("/:userName/favourites/:id", asyncHandler(async (req,res,next)=>{
+  const id=req.params.id;
+  const username = req.params.userName;
+  const movie = await movieModel.findByMovieDBId(id);
+  const user = await User.findByUserName(username);
+  if(user.favourites.indexOf(movie._id) !== -1){
+    const index = user.favourites.indexOf(movie._id);
+    await user.favourites.splice(index, 1);
+    await user.save();
+    res.status(200).json({
+      success: true,
+      delete: true,
+      favourites: user.favourites
+    })
+  }else{
+    res.status(403).json({
+      success: false,
+      message: "The movie not in the watchlist!"
+    })
+  }
+}))
 
 export default router;
