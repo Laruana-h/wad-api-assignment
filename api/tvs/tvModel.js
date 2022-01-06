@@ -17,7 +17,11 @@ const TVSchema = new Schema({
   popularity: {type: Number},
   poster_path: {type: String},
   vote_average: {type: Number},
-  vote_count: {type: Number}
+  vote_count: {type: Number},
+  reviews: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Reviews'
+  }, {collection: 'tvs'}],
   
 })
 TVSchema.statics.findByTVDBId = function (id) {
