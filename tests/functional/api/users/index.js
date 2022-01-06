@@ -272,6 +272,20 @@ describe("Users endpoint", () => {
           })
         })
       })
+      describe("When request with not exist actor ",()=>{
+        it("should return error message and a status 401.",(done)=>{
+          request(api)
+          .post('/api/users/user1/liked_actors')
+          .send({
+            "id":111
+          })
+          .expect(401)
+          .end((req,res) =>{
+            expect(res.body.msg).to.eq("The actor id not exits");
+            done();
+          })
+        })
+      })
     })
   })
   describe("/api/users/:userName/tvlist endpoint",()=>{
@@ -326,7 +340,20 @@ describe("Users endpoint", () => {
           })
         })
       })
-      
+      describe("When request with not exist tv ",()=>{
+        it("should return error message and a status 401.",(done)=>{
+          request(api)
+          .post('/api/users/user1/tvlist')
+          .send({
+            "id":111
+          })
+          .expect(401)
+          .end((req,res) =>{
+            expect(res.body.msg).to.eq("The tv id not exits");
+            done();
+          })
+        })
+      })
     
     })
   })
