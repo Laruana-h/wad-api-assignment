@@ -29,7 +29,7 @@ const app = express();
 
 const port = process.env.PORT;
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
-app.use(express.json());
+// app.use(express.json());
 app.use(express.static("public"));
 app.use(
   session({
@@ -40,8 +40,8 @@ app.use(
 );
 
 app.use(passport.initialize());
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 
 
 app.use('/api/movies',  moviesRouter);
