@@ -33,13 +33,13 @@ describe("Movies endpoint", () => {
 
   beforeEach(async () => {
     try {
-      // await Movie.deleteMany();
+      await Movie.deleteMany();
       movies = await getMovies();
       reviews = await getMovieReviews();
       recommend = await getRecommendations();
       similar = await getMovieSimilar();
       query =await searchMovies();
-      // await Movie.collection.insertMany(movies);
+      await Movie.collection.insertMany(movies);
       
     } catch (err) {
       console.error(`failed to Load movie Data: ${err}`);
@@ -47,6 +47,7 @@ describe("Movies endpoint", () => {
   });
   afterEach(() => {
     api.close(); // Release PORT 8080
+    
   });
   describe("GET /api/movies ", () => {
     it("should return 20 movies and a status 200", () => {
@@ -57,8 +58,10 @@ describe("Movies endpoint", () => {
         .expect("Content-Type", /json/)
         .expect(200)
         .then((err, res) => {
+          console.log(res.body.results)
           expect(res.body.results).to.be.a("array");
           expect(res.body.results.length).to.equal(20);
+          
         });
     });
   });

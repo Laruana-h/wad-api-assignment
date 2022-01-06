@@ -69,7 +69,7 @@ export async function loadTvs() {
     await tvModel.collection.insertMany(tvs);
     console.info(`${tvs.length} TVs were successfully stored.`);
   } catch (err) {
-    console.error(`failed to Load actor Data: ${err}`);
+    console.error(`failed to Load tv Data: ${err}`);
   }
 }
 

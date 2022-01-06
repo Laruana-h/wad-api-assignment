@@ -156,7 +156,8 @@ describe("Rate endpoint", () => {
             expect(res.body.rate.username).to.be.equal("user1");
             expect(res.body.rate.movie_id).to.be.equal(508442);
             expect(res.body.rate.rating).to.not.equal(oldRating);
-            expect(res.body.rate.rating).to.be.equal(1);
+            expect(res.body.rate.rating).to.be.equal(1); 
+            
           })
       })
     })

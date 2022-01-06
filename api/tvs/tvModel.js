@@ -6,7 +6,7 @@ const TVSchema = new Schema({
   backdrop_path: { type: String },
   first_air_date: {type: String},
   genre_ids: [{type: Number}],
-  id: {type: Number, required: true,unique: true},
+  id: {type: Number, required: true,unique: false},
   name: {type: String},
   origin_country: [
     {type: String}

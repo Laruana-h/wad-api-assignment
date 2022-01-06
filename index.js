@@ -10,9 +10,11 @@ import tvsRouter from './api/tvs';
 import session from 'express-session';
 import passport from './authenticate';
 import rateRouter from './api/rate';
+import bodyParser from "body-parser";
+
 const swaggerUI = require('swagger-ui-express')
 const swaggerDocument = require('./swagger.json')
-dotenv.config();
+
 
 const errHandler = (err, req, res, next) => {
   /* if the error in development then send stack trace to display whole error,
@@ -22,13 +24,25 @@ const errHandler = (err, req, res, next) => {
   }
   res.status(500).send(`Hey!! You caught the error 👍👍. Here's the details: ${err.stack} `);
 };
-
+dotenv.config();
 const app = express();
 
 const port = process.env.PORT;
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDocument))
 app.use(express.json());
+app.use(
+  session({
+    secret: "ilikecake",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
 app.use(passport.initialize());
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded());
+
+
 app.use('/api/movies', passport.authenticate('jwt', {session: false}), moviesRouter);
 app.use('/api/actors', passport.authenticate('jwt', {session: false}), actorsRouter);
 app.use('/api/tvs', passport.authenticate('jwt', {session: false}), tvsRouter);
