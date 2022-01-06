@@ -27,7 +27,7 @@ describe("Genres endpoint", () => {
 
   beforeEach(async () => {
     try {
-      await Genres.deleteMany();
+      // await Genres.deleteMany();
       // await Movie.collection.insertMany(movies);
       
     } catch (err) {

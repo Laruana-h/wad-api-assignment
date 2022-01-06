@@ -29,7 +29,7 @@ describe("Actors endpoint", () => {
 
   beforeEach(async () => {
     try {
-      await Actor.deleteMany();
+      // await Actor.deleteMany();
       actors =await getActors();
       // await Movie.collection.insertMany(movies);
       

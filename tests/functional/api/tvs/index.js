@@ -29,7 +29,7 @@ describe("TVs endpoint", () => {
   beforeEach(async () => {
     try {
       tvs = await getTVs();
-      await TV.deleteMany();
+      // await TV.deleteMany();
 
     } catch (err) {
       console.error(`failed to Load tv Data: ${err}`);
