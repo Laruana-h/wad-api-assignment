@@ -84,20 +84,31 @@ describe("TVs endpoint", () => {
     });
   });
 
-  // describe('GET /api/tvs/tmdb/populartv', () => {
-  //   it.only('should return 200 status and 20 movies', (done) => {
-  //      request(api)
-  //       .get('/api/tvs/tmdb/populartv')
-  //       .set('Accept', 'application/json')
-  //       .expect(200)
-  //       .end((err,res) => {
-  //         if (err){throw err;}
-  //         expect(res.body.results).to.be.a("array");
-  //         expect(res.body.results.length).to.equal(20);
-  //         done();
-  //       })
-  //   })
-  // })
+  describe('GET /api/tvs/tmdb/populartv', () => {
+    it('should return 200 status and 20 movies', () => {
+       request(api)
+        .get('/api/tvs/tmdb/populartv')
+        .set('Accept', 'application/json')
+        .expect(200)
+        .then((err,res) => {
+          if (err){throw err;}
+          expect(res.body.results).to.be.a("array");
+          expect(res.body.results.length).to.equal(20);
+          
+        })
+    })
+  })
+  describe('GET /search/:page', () => {
+    it('should return 200 status and tv detail', () => {
+      return request(api)
+        .get(`/api/tvs/search/1?search=Iron`)
+        .set('Accept', 'application/json')
+        .expect(200)
+        .then(res => {
+          expect(res.body.length).to.eq(20)
+        })
+    })
+  })
 
 })
 

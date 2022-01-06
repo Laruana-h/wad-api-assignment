@@ -203,6 +203,20 @@ describe("Users endpoint", () => {
           })
         })
       })
+      describe("When request with not exist movie ",()=>{
+        it("should return error message and a status 401.",(done)=>{
+          request(api)
+          .post('/api/users/user1/favourites')
+          .send({
+            "id":111
+          })
+          .expect(401)
+          .end((req,res) =>{
+            expect(res.body.msg).to.eq("The movie id not exits");
+            done();
+          })
+        })
+      })
     })
   })
 
@@ -312,6 +326,8 @@ describe("Users endpoint", () => {
           })
         })
       })
+      
+    
     })
   })
 })
