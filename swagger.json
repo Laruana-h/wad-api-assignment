@@ -763,6 +763,60 @@
         }
       }
     },
+    "/api/tvs/{id}/reviews": {
+      "get": {
+        "tags": [
+          "TVs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The tv id",
+            "required": "true",
+            "type": "string"
+          }
+        ],
+        "summary": "Get specific tv in system",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TV"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },     
+       "post": {
+        "tags": [
+          "TVs"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The movie id",
+            "required": "true",
+            "type": "string"
+          }
+        ],
+        "summary": "Post movie review",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/TV"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
     "/api/rate": {
       "get": {
         "tags": [
