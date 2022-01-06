@@ -6,7 +6,7 @@ import movieModel from '../api/movies/movieModel';
 import actorsModel from '../api/actors/actorsModel';
 import tvModel from '../api/tvs/tvModel';
 
-const {getMovies,getGenres,getActors,getTVs} = require('../api/tmdb-api')
+import {getMovies,getGenres,getActors,getTVs} from '../api/tmdb-api';
 
 dotenv.config();
 
@@ -23,10 +23,10 @@ async function loadUsers() {
   }
 }
 async function loadGenres() {
+  const genres = await getGenres();
   console.log('load genre Data');
   try {
     await genresModel.deleteMany();
-    const genres = await getGenres();
     await genresModel.collection.insertMany(genres);
     console.info(`${genres.length} genres were successfully stored.`);
   } catch (err) {

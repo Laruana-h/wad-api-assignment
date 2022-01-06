@@ -33,7 +33,7 @@ describe("Movies endpoint", () => {
 
   beforeEach(async () => {
     try {
-      await Movie.deleteMany();
+      // await Movie.deleteMany();
       movies = await getMovies();
       reviews = await getMovieReviews();
       recommend = await getRecommendations();
