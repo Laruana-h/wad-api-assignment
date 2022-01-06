@@ -3,11 +3,10 @@ import request from "supertest";
 const mongoose = require("mongoose");
 import TV from "../../../../api/tvs/tvModel";
 import api from "../../../../index";
-import { getTVs } from "../../../../api/tmdb-api";
+import { getTVs,getPopularTVs } from "../../../../api/tmdb-api";
 const expect = chai.expect;
 let db;
 let tvs;
-let token = "eyJhbGciOiJIUzI1NiJ9.dXNlcjE.FmYria8wq0aFDHnzYWhKQrhF5BkJbFNN1PqNyNQ7V4M";
 
 describe("TVs endpoint", () => {
   before(() => {
@@ -29,7 +28,8 @@ describe("TVs endpoint", () => {
   beforeEach(async () => {
     try {
       tvs = await getTVs();
-      // await TV.deleteMany();
+      await TV.deleteMany();
+      await TV.collection.insertMany(tvs);
 
     } catch (err) {
       console.error(`failed to Load tv Data: ${err}`);
@@ -39,40 +39,41 @@ describe("TVs endpoint", () => {
     api.close(); // Release PORT 8080
   });
   describe("GET /api/tvs ", () => {
-    it("should return 20 tvs and a status 200", () => {
+    it("should return 20 tvs and a status 200", (done) => {
       request(api)
         .get("/api/tvs/?page=1&limit=20")
-        .set("Authorization", "BEARER" + token)
         .set("Accept", "application/json")
         .expect("Content-Type", /json/)
         .expect(200)
-        .then((err, res) => {
+        .end((err, res) => {
+          if (err){throw err;}
           expect(res.body.results).to.be.a("array");
           expect(res.body.results.length).to.equal(20);
+          done();
         });
     });
   });
 
   describe("GET /api/tvs/:id", () => {
     describe("when the id is valid", () => {
-      it("should return the matching tv", () => {
+      it("should return the matching tv", (done) => {
         request(api)
           .get(`/api/tvs/${tvs[0].id}`)
-          .set("Authorization", "BEARER" + token)
           .set("Accept", "application/json")
           .expect("Content-Type", /json/)
           .expect(200)
-          .then((res) => {
+          .end((err,res) => {
+            if (err){throw err;}
             expect(res.body).to.have.property("name", tvs[0].name);
+            done();
           });
       });
     });
     describe("when the id is invalid", () => {
       it("should return the NOT found message", () => {
-        request(api)
+        return request(api)
           .get("/api/tvs/9999")
           .set("Accept", "application/json")
-          .set("Authorization", "BEARER" + token)
           .expect("Content-Type", /json/)
           .expect(404)
           .expect({
@@ -82,17 +83,21 @@ describe("TVs endpoint", () => {
       });
     });
   });
-  describe('GET /api/movies/tmdb/populartv', () => {
-    it('should return 200 status and 20 movies', () => {
-      request(api)
-        .get('/api/movies/tmdb/populartv')
-        .set('Accept', 'application/json')
-        .expect(200)
-        .then(res => {
-          expect(res.body.results.length).to.eq(20)
-        })
-    })
-  })
+
+  // describe('GET /api/tvs/tmdb/populartv', () => {
+  //   it.only('should return 200 status and 20 movies', (done) => {
+  //      request(api)
+  //       .get('/api/tvs/tmdb/populartv')
+  //       .set('Accept', 'application/json')
+  //       .expect(200)
+  //       .end((err,res) => {
+  //         if (err){throw err;}
+  //         expect(res.body.results).to.be.a("array");
+  //         expect(res.body.results.length).to.equal(20);
+  //         done();
+  //       })
+  //   })
+  // })
 
 })
 

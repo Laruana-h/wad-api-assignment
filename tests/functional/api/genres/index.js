@@ -2,11 +2,12 @@ import chai from "chai";
 import request from "supertest";
 const mongoose = require("mongoose");
 import Genres from "../../../../api/genres/genresModel";
+import { getGenres } from "../../../../api/tmdb-api";
 import api from "../../../../index";
 
 const expect = chai.expect;
 let db;
-let token ="eyJhbGciOiJIUzI1NiJ9.dXNlcjE.FmYria8wq0aFDHnzYWhKQrhF5BkJbFNN1PqNyNQ7V4M";
+let genres;
 
 describe("Genres endpoint", () => {
   before(() => {
@@ -27,8 +28,9 @@ describe("Genres endpoint", () => {
 
   beforeEach(async () => {
     try {
-      // await Genres.deleteMany();
-      // await Movie.collection.insertMany(movies);
+      await Genres.deleteMany();
+      genres = await getGenres();
+      await Genres.collection.insertMany(genres);
       
     } catch (err) {
       console.error(`failed to Load user Data: ${err}`);
@@ -39,16 +41,17 @@ describe("Genres endpoint", () => {
     api.close(); // Release PORT 8080
   });
   describe("GET /api/genres ", () => {
-    it("should return 19 genres and a status 200", () => {
+    it("should return 19 genres and a status 200", (done) => {
       request(api)
         .get("/api/genres")
-        .set("Authorization","BEARER"+token)
         .set("Accept", "application/json")
         .expect("Content-Type", /json/)
         .expect(200)
-        .then((err, res) => {
-          expect(res.body.results).to.be.a("array");
-          expect(res.body.results.length).to.equal(19);
+        .end((err, res) => {
+          if (err){throw err;}
+          expect(res.body).to.be.a("array");
+          expect(res.body.length).to.equal(genres.length);
+          done();
         });
     });
   });
